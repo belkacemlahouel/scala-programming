@@ -8,6 +8,11 @@ object Main {
         print(pascal(col, row) + " ")
       println()
     }
+
+    println(countChange(0, List()))
+    println(countChange(4, List()))
+    println(countChange(4, List(1)))
+    println(countChange(4, List(1, 2)) + " " + countChange(4, List(2, 1)))
   }
 
   /**
@@ -22,6 +27,7 @@ object Main {
    * Exercise 2
    */
     def balance(chars: List[Char]): Boolean = {
+
       def test(cur: Integer, open: Integer, close: Integer): Boolean =
         if (cur >= chars.length) (open == close)
         else if (chars(cur) == ')') if (open <= close) false else test(cur + 1, open, close + 1)
@@ -35,5 +41,8 @@ object Main {
   /**
    * Exercise 3
    */
-    def countChange(money: Int, coins: List[Int]): Int = ???
+    def countChange(money: Int, coins: List[Int]): Int =
+      if(money == 0) 1
+      else if(money > 0 && !coins.isEmpty) countChange(money - coins.head, coins) + countChange(money, coins.tail)
+      else 0
   }
