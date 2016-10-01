@@ -109,7 +109,7 @@ abstract class TweetSet {
 }
 
 class Empty extends TweetSet {
-  def filterAcc(p: Tweet => Boolean, acc: TweetSet): TweetSet = new Empty
+  def filterAcc(p: Tweet => Boolean, acc: TweetSet): TweetSet = acc
 
   def union(that: TweetSet): TweetSet = that
 
@@ -159,7 +159,7 @@ class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
   def descendingByRetweet: TweetList = {
     lazy val mostRet = mostRetweeted
 
-    if (isEmpty) new Cons(mostRet, remove(mostRet).descendingByRetweet)
+    if (!isEmpty) new Cons(mostRet, remove(mostRet).descendingByRetweet)
     else Nil
   }
 
@@ -239,4 +239,24 @@ object GoogleVsApple {
 object Main extends App {
   // Print the trending tweets
   GoogleVsApple.trending foreach println
+}
+
+object Tests extends App {
+  val t1: Tweet = new Tweet("Usr", "1", 10)
+  val t2: Tweet = new Tweet("Usr", "2", 100)
+  val t3: Tweet = new Tweet("Usr", "3", 8)
+  val t4: Tweet = new Tweet("Usr", "4", 6)
+  val t5: Tweet = new Tweet("Usr", "5", 1)
+  val t6: Tweet = new Tweet("Usr", "6", 1)
+  val t7: Tweet = new Tweet("Usr", "7", 1)
+  val t8: Tweet = new Tweet("Usr", "8", 1)
+  val t9: Tweet = new Tweet("Usr", "9", 1)
+
+  val tset: TweetSet = new Empty
+  tset.incl(t1).incl(t2).incl(t3).incl(t4).incl(t5).incl(t6).incl(t7).incl(t8).incl(t9)
+
+  val tset_filter: TweetSet = tset.filter(t => t.retweets > 10)
+  tset_filter foreach println
+
+  println("Done!")
 }
