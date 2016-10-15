@@ -77,8 +77,7 @@ object Huffman {
     * println("integer is  : "+ theInt)
     * }
     */
-  def times2(chars: List[Char]): List[(Char, Int)] = chars.groupBy(x => x).map(x => (x._1, x._2.size)).toList
-
+  //def times(chars: List[Char]): List[(Char, Int)] = chars.groupBy(x => x).map(x => (x._1, x._2.size)).toList
   def times(chars: List[Char]): List[(Char, Int)] = timesIter(chars, Nil)
 
   private def timesIter(chars: List[Char], sol: List[(Char, Int)]): List[(Char, Int)] = {
@@ -115,7 +114,10 @@ object Huffman {
   /**
     * Checks whether the list `trees` contains only one single code tree.
     */
-  def singleton(trees: List[CodeTree]): Boolean = ???
+  def singleton(trees: List[CodeTree]): Boolean = trees match {
+    case e :: tail => tail.isEmpty
+    case _ => false
+  }
 
   /**
     * The parameter `trees` of this function is a list of code trees ordered
@@ -129,7 +131,12 @@ object Huffman {
     * If `trees` is a list of less than two elements, that list should be returned
     * unchanged.
     */
-  def combine(trees: List[CodeTree]): List[CodeTree] = ???
+  //suppose trees is already sorted
+  def combine(trees: List[CodeTree]): List[CodeTree] = trees match {
+    case Nil => trees
+    case t :: Nil => trees
+    case t1 :: t2 :: tail => makeCodeTree(t1, t2) :: tail
+  }
 
   /**
     * This function will be called in the following way:
@@ -148,7 +155,9 @@ object Huffman {
     * the example invocation. Also define the return type of the `until` function.
     *  - try to find sensible parameter names for `xxx`, `yyy` and `zzz`.
     */
-  def until(xxx: ???, yyy: ???)(zzz: ???): ??? = ???
+  def until(testSing: List[CodeTree] => Boolean, comb: List[CodeTree] => List[CodeTree])(trees: List[CodeTree]): CodeTree =
+    if (testSing(trees)) trees.head
+    else until(testSing, comb)(trees)
 
   /**
     * This function creates a code tree which is optimal to encode the text `chars`.
@@ -156,7 +165,8 @@ object Huffman {
     * The parameter `chars` is an arbitrary text. This function extracts the character
     * frequencies from that text and creates a code tree based on them.
     */
-  def createCodeTree(chars: List[Char]): CodeTree = ???
+  def createCodeTree(chars: List[Char]): CodeTree =
+    until(singleton, combine) (makeOrderedLeafList(times(chars)))
 
 
   // Part 3: Decoding
