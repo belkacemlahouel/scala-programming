@@ -58,4 +58,8 @@ class HuffmanSuite extends FunSuite {
     assert(ans.contains(('A', 3)) && ans.contains(('B', 2)) && ans.contains(('C', 1)))
   }
 
+  test("secret decode") {
+    assert(Huffman.decodedSecret === "huffmanestcool".toList)
+  }
+
 }
